@@ -132,6 +132,17 @@ const MovieQuiz = () => {
         }
     };
 
+    const handleRestart = () => {
+        setGameOver(false);
+        setQuizStarted(false);
+        setTimer(60);
+        setScore(0);
+        setMoviePosterPath(null);
+        setActorName(null);
+        setActorPresent(null);
+        setAnswer(null);
+    };
+
     return (
         <div className="movie-quiz">
             <p><b>Is the actor part of the movie's cast?</b></p>
@@ -163,14 +174,14 @@ const MovieQuiz = () => {
                             NO
                         </label>
                     </div>
-                    <button onClick={() => handleAnswerSubmit()}>SUBMIT ANSWER</button>
+                    <button onClick={handleAnswerSubmit}>SUBMIT ANSWER</button>
                 </div>
             }
             {gameOver &&
                 <div>
                     <h2>GAME OVER!</h2>
                     <p>Your total score is {score}</p>
-                    <button type="button" onClick={() => console.log("RESTART")}>RESTART</button>
+                    <button type="button" onClick={handleRestart}>RESTART</button>
                 </div>
             }
         </div>
