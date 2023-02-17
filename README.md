@@ -1,70 +1,26 @@
-# Getting Started with Create React App
+# Movie Poster Quiz
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+A simple game that displays an actor's name, along with a movie poster, and asks the user to guess whether the actor is part of the movie's cast. The quiz consists of yes/no questions, and has a 60s timer from the start of the quiz. If the user guesses correctly, the quiz continues with another poster and actor name until the 60s is up. If the user guesses incorrectly, the game is over. Once the game is over, the user's score will be displayed, and the user has an option to restart the quiz.
 
-## Available Scripts
+The movies and actors are fetched from The Movie DB API:
+[https://developers.themoviedb.org/](https://developers.themoviedb.org/)
 
-In the project directory, you can run:
 
-### `npm start`
+## Running the application
 
-Runs the app in the development mode.\
-Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
+In the root directory, run:
 
-The page will reload when you make changes.\
-You may also see any lint errors in the console.
+`npm start`
 
-### `npm test`
+In a browser, open [http://localhost:3000](http://localhost:3000)
 
-Launches the test runner in the interactive watch mode.\
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
 
-### `npm run build`
+## Notes
 
-Builds the app for production to the `build` folder.\
-It correctly bundles React in production mode and optimizes the build for the best performance.
+The main focus of this game is to query the API for the most popular movies, in order to keep it relevant and fun for the user. I created a local cache that stores the top 100 most popular movies.
 
-The build is minified and the filenames include the hashes.\
-Your app is ready to be deployed!
+Since the API contains a large number of actors, I decided that it would be better to fetch the actors from each movie in the cache, instead of fetching all actors, which gives a better chance of showing known actor names. So the cache stores the movies along with a list of actor IDs in each movie.
 
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `npm run eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can't go back!**
-
-If you aren't satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you're on your own.
-
-You don't have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn't feel obligated to use this feature. However we understand that this tool wouldn't be useful if you couldn't customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
-
-### Code Splitting
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/code-splitting](https://facebook.github.io/create-react-app/docs/code-splitting)
-
-### Analyzing the Bundle Size
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size](https://facebook.github.io/create-react-app/docs/analyzing-the-bundle-size)
-
-### Making a Progressive Web App
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app](https://facebook.github.io/create-react-app/docs/making-a-progressive-web-app)
-
-### Advanced Configuration
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/advanced-configuration](https://facebook.github.io/create-react-app/docs/advanced-configuration)
-
-### Deployment
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/deployment](https://facebook.github.io/create-react-app/docs/deployment)
-
-### `npm run build` fails to minify
-
-This section has moved here: [https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify](https://facebook.github.io/create-react-app/docs/troubleshooting#npm-run-build-fails-to-minify)
+There are some issues with the API:
+- When selecting a random actor, some queries for actor by ID do not return any data, so to work around that I added error handling in `getActor()`, which recursively calls the same function until a valid actor is found.
+- Not all movies contain a poster path, so I decided to handle that with a simple condition that does not include movies without a poster path in the cache.
