@@ -74,7 +74,6 @@ const MovieQuiz = () => {
             }
         })
         .then((result) => {
-            console.log(result);
             setActorName(result.name);
             return result.id;
         })
@@ -189,67 +188,3 @@ const MovieQuiz = () => {
 }
 
 export default MovieQuiz;
-
-
-// const getMovie = () => {
-//     let movieId = Math.floor(Math.random() * 100000) + 1;
-//     fetch(`https://api.themoviedb.org/3/movie/${movieId}?api_key=${apikey}&language=en-US`)
-//     .then((res) => {
-//         if (res.ok) {
-//             return res.json();
-//         } else {
-//             throw new Error("Movie ID not found");
-//         }
-//     })
-//     .then((result) => {
-//         if (result["poster_path"] === null) {
-//             throw new Error("Movie poster not found");
-//         }
-//         // console.log(result);
-//         setMoviePosterPath(result["poster_path"]);
-//         getMovieCast(movieId);
-//     })
-//     .catch((error) => {
-//         console.log(`ERROR: ${error}`);
-//         getMovie(); // Call getMovie recursively until a valid movie ID with poster is found
-//     });
-// };
-
-// const getMovieCast = (movieId) => {
-//     fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apikey}&language=en-US`)
-//     .then((res) => {
-//         return res.json();
-//     })
-//     .then((result) => {
-//         let actors = result["cast"].filter((a) => a["known_for_department"] === "Acting");
-//         setMovieActors(actors.map((a) => a["id"]));
-//     })
-//     .catch((error) => {
-//         console.log(`ERROR: ${error}`);
-//     });
-// };
-
-// const getActor = () => {
-//     let actorId = Math.floor(Math.random() * 3000000) + 1;
-//     fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=${apikey}&language=en-US`)
-//     .then((res) => {
-//         if (res.ok) {
-//             return res.json();
-//         } else {
-//             throw new Error("Person ID not found");
-//         }
-//     })
-//     .then((result) => {
-//         console.log(`DEPARTMENT: ${result["known_for_department"]}`);
-//         if (result["known_for_department"] === "Acting") {
-//             // console.log(result);
-//             setActorName(result["name"]);
-//         } else {
-//             throw new Error("Person is not an actor");
-//         }
-//     })
-//     .catch((error) => {
-//         console.log(`ERROR: ${error}`);
-//         getActor();
-//     });
-// };
