@@ -77,30 +77,35 @@ const MovieQuiz = () => {
         })
         .then((result) => {
             setActorName(result.name);
-            return result.id;
         })
         .catch((error) => {
             console.log("Error getting actor name", error);
-            getActor(actorIds);
         });
-    }
+    };
 
     const generateQuestion = () => {
-        const allActors = Object.values(cache).flatMap((movie) => movie.actorIds);
-        console.log("all actors: ", allActors.length);
-        const randomIndex = Math.floor(Math.random() * Object.keys(cache).length);
-        const movie = cache[Object.keys(cache)[randomIndex]];
-        console.log("movie: ", movie);
-        let actorId;
+        const allActors = Object.values(cache.current).flatMap((movie) => movie.actorIds);
+
+        const randomIndex = Math.floor(Math.random() * Object.keys(cache.current).length);
+        const movie = cache.current[Object.keys(cache.current)[randomIndex]];
+
         // random number between 0-1 to balance yes/no answers
         const randomNumber = Math.random();
         if (randomNumber < 0.5) {
-            actorId = getActor(allActors);
+            // get random actor from all actors - likely to be a NO answer
+            console.log("!!! NO !!!");
+            const actorId = allActors[Math.floor(Math.random() * allActors.length)];
+            getActor(actorId);
+            setActorPresent(movie.actorIds.includes(actorId));
         } else {
-            actorId = getActor(movie.actorIds);
+            // get random actor from the movie cast - YES answer
+            console.log("!!! YES !!!");
+            const actorId = movie.actorIds[Math.floor(Math.random() * movie.actorIds.length)];
+            getActor(actorId);
+            setActorPresent(movie.actorIds.includes(actorId));
         }
+
         setMoviePosterPath(movie.poster_path);
-        setActorPresent(movie.actorIds.includes(actorId));
     };
 
     const startTimer = () => {
