@@ -5,7 +5,7 @@ import "./MovieQuiz.css";
 const MovieQuiz = () => {
 
     const apikey = "9883a9d4a00017400ff1e1fc33cfe19d";
-    const cache = {};
+    const cache = useRef({});
 
     const timerRef = useRef(null);
 
@@ -20,9 +20,11 @@ const MovieQuiz = () => {
     const [gameOver, setGameOver] = useState(false);
 
     useEffect(() => {
-        populateCache();
+        if (Object.keys(cache.current).length === 0) {
+            populateCache();
+        }
     });
-    
+
     useEffect(() => {
         if (timer === 0 || gameOver) {
             clearInterval(timerRef.current);
@@ -40,17 +42,17 @@ const MovieQuiz = () => {
             .then((result) => {
                 result.results.forEach((movie) => {
                     if (movie.poster_path !== null) {
-                        cache[movie.id] = movie;
+                        cache.current[movie.id] = movie;
                     }
                 });
-                
+
                 // get actor IDs for each movie and store them in cache
                 Promise.all(
-                    Object.keys(cache).map((movieId) => {
+                    Object.keys(cache.current).map((movieId) => {
                         return fetch(`https://api.themoviedb.org/3/movie/${movieId}/credits?api_key=${apikey}&language=en-US`)
                         .then((res) => res.json())
                         .then((result) => {
-                            cache[movieId].actorIds = result.cast.filter(
+                            cache.current[movieId].actorIds = result.cast.filter(
                                 (person) => person.known_for_department === "Acting"
                             )
                             .map((actor) => actor.id);
@@ -110,7 +112,8 @@ const MovieQuiz = () => {
     };
 
     const handleStartButtonClick = () => {
-        setQuizStarted(!quizStarted);
+        // setAllActors(Object.values(cache).flatMap((movie) => movie.actorIds));
+        setQuizStarted(true);
         generateQuestion();
         startTimer();
     };
