@@ -5,14 +5,13 @@ import "./MovieQuiz.css";
 const MovieQuiz = () => {
 
     const apikey = "9883a9d4a00017400ff1e1fc33cfe19d";
-    const cache = useRef({});
 
+    const cache = useRef({});
     const timerRef = useRef(null);
 
     const [quizStarted, setQuizStarted] = useState(false);
     const [timer, setTimer] = useState(60);
     const [score, setScore] = useState(0);
-    const [allActors, setAllActors] = useState([]);
     const [moviePosterPath, setMoviePosterPath] = useState(null);
     const [actorName, setActorName] = useState(null);
     const [actorPresent, setActorPresent] = useState(null);
@@ -59,14 +58,15 @@ const MovieQuiz = () => {
                         })
                     })
                 );
+            })
+            .catch((error) => {
+                console.log("Error populating cache: ", error);
             });
         }
-        console.log("Cache populated", cache);
+        console.log("Cache populated", cache.current);
     };
 
-    const getActor = (actorIds) => {
-        const actorId = actorIds[Math.floor(Math.random() * actorIds.length)];
-        console.log("ACTORID: ", actorId);
+    const getActor = (actorId) => {
         fetch(`https://api.themoviedb.org/3/person/${actorId}?api_key=${apikey}&language=en-US`)
         .then((res) => {
             if (res.ok) {
@@ -117,7 +117,6 @@ const MovieQuiz = () => {
     };
 
     const handleStartButtonClick = () => {
-        // setAllActors(Object.values(cache).flatMap((movie) => movie.actorIds));
         setQuizStarted(true);
         generateQuestion();
         startTimer();
@@ -132,7 +131,6 @@ const MovieQuiz = () => {
             setScore((prevScore) => prevScore + 1);
             generateQuestion();
             setAnswer(null);
-            console.log(actorPresent);
         } else {
             console.log("GAME OVER");
             setGameOver(true);
@@ -153,7 +151,7 @@ const MovieQuiz = () => {
     return (
         <div className="movie-quiz">
             <p><b>Is the actor part of the movie's cast?</b></p>
-            <p>TIME LEFT: {timer}s</p>
+            <p>TIME LEFT: <b>{timer}s</b></p>
             {!quizStarted &&
                 <button type="button" onClick={handleStartButtonClick}>START GAME</button>
             }
@@ -161,7 +159,7 @@ const MovieQuiz = () => {
                 <div className="movie-actor">
                     <h2>{actorName}</h2>
                     <img src={`https://image.tmdb.org/t/p/w500${moviePosterPath}`} alt="ALT" />
-                    <div>
+                    <div className="answer-select">
                         <label>
                             <input
                                 type="radio"
@@ -187,7 +185,7 @@ const MovieQuiz = () => {
             {gameOver &&
                 <div>
                     <h2>GAME OVER!</h2>
-                    <p>Your total score is {score}</p>
+                    <p>Your total score is: <b>{score}</b></p>
                     <button type="button" onClick={handleRestart}>RESTART</button>
                 </div>
             }
